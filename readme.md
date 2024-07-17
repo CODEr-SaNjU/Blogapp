@@ -16,14 +16,14 @@ This is a simple blog application built using Django and Django REST Framework. 
 1. **Clone the repository:**
 
    ```bash
-   git clone 
+   git clone  https://github.com/CODEr-SaNjU/Blogapp.git
    cd Blogapp
    ```
 
 2. **Create a virtual environment and activate it:**
 
    ```bash
-   python -m venv env
+   python -m venv blogappvenv
    source env/bin/activate  # On Windows use `env\Scripts\activate`
    ```
 
@@ -180,29 +180,7 @@ This is a simple blog application built using Django and Django REST Framework. 
   }
   ```
 
----
-
-## Testing
-
-To run tests for models and API views:
-
-```bash
-python manage.py test
-```
 
 ## Authors
 
-- Your Name
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Mention any contributors or resources used
-
-## Questions or Issues?
-
-For any questions, feedback, or issues, please contact [email@example.com](mailto:email@example.com).
-
+- @coder-sanju

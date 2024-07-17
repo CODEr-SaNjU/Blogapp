@@ -1,21 +1,60 @@
-
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
+from rest_framework.response import Response
 from .models import Post, Comment
-from .serializers import PostSerializer, CommentSerializer
+from .serializers import PostSerializer, CommentSerializer, LikePostSerializer
 from .permissions import IsOwnerOrReadOnly
+from .pagination import TeacherPagination
+from rest_framework.authentication import TokenAuthentication
+
 
 class PostListCreateAPIView(generics.ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    authentication_classes = [TokenAuthentication]
+
+    pagination_class =   TeacherPagination
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
-class PostRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class PostDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+
+class LikePostAPIView(generics.GenericAPIView):
+    queryset = Post.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = LikePostSerializer
+
+    def post(self, request, pk):
+        post = self.get_object()
+        user = request.user
+        if user in post.likes.all():
+            post.likes.remove(user)
+            action = 'unliked'
+        else:
+            post.likes.add(user)
+            action = 'liked'
+        serializer = self.get_serializer(data={'action': action, 'total_likes': post.total_likes})
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data)
+
 
 class CommentListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = CommentSerializer
