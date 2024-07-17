@@ -141,7 +141,8 @@ This is a simple blog application built using Django and Django REST Framework. 
   ```json
   {
     "title": "Updated Post Title",
-    "content": "Updated content of the post."
+    "content": "Updated content of the post.",
+    "author": "1"
   }
   ```
 
@@ -176,7 +177,8 @@ This is a simple blog application built using Django and Django REST Framework. 
   Example Request Body:
   ```json
   {
-    "text": "This is a new comment."
+    "text": "This is a new comment.",
+    "author": "1"
   }
   ```
 
