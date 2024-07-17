@@ -2,16 +2,17 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer, LikePostSerializer
+from rest_framework.permissions import IsAuthenticated
 from .permissions import IsOwnerOrReadOnly
 from .pagination import TeacherPagination
-from rest_framework.authentication import TokenAuthentication
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 class PostListCreateAPIView(generics.ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
 
     pagination_class =   TeacherPagination
 
@@ -39,7 +40,7 @@ class PostDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 class LikePostAPIView(generics.GenericAPIView):
     queryset = Post.objects.all()
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     serializer_class = LikePostSerializer
 
     def post(self, request, pk):
@@ -58,7 +59,7 @@ class LikePostAPIView(generics.GenericAPIView):
 
 class CommentListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = CommentSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         post_id = self.kwargs['post_id']
